@@ -1,8 +1,6 @@
-from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import *
 from PyQt5 import uic
-from PyQt5.QtWidgets import QWidget
-
+import pyupbit
 class Mywidgetset(QWidget):
     def __init__(self, ticker, parent = None):
         super().__init__(parent)
@@ -12,4 +10,6 @@ class Mywidgetset(QWidget):
         self.btn.clicked.connect(self.btn_clicked)
 
     def btn_clicked(self):
+        price = pyupbit.get_current_price(self.ticker)
+        self.price.setText(str(price)) # price 라벨에 현재가 출력
         print(f"{self.ticker} 버튼클릭")
