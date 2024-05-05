@@ -23,17 +23,23 @@ class orderbookwidget(QWidget):
 
         for i in range(10):
             d = QTableWidgetItem(str(""))
+            d.setTextAlignment(Qt.AlignRight | Qt.AlignVCenter)
             self.asktable.setItem(i, 0, d)
             d = QTableWidgetItem(str(""))
+            d.setTextAlignment(Qt.AlignRight | Qt.AlignVCenter)
             self.asktable.setItem(i, 1, d)
             d = QTableWidgetItem(str(""))
+            d.setTextAlignment(Qt.AlignRight | Qt.AlignVCenter)
             self.asktable.setItem(i, 2, d)
 
             d = QTableWidgetItem(str(""))
+            d.setTextAlignment(Qt.AlignRight | Qt.AlignVCenter)
             self.bidtable.setItem(i, 0, d)
             d = QTableWidgetItem(str(""))
+            d.setTextAlignment(Qt.AlignRight | Qt.AlignVCenter)
             self.bidtable.setItem(i, 1, d)
             d = QTableWidgetItem(str(""))
+            d.setTextAlignment(Qt.AlignRight | Qt.AlignVCenter)
             self.bidtable.setItem(i, 2, d)
 
     def update_orderbook(self, data):
