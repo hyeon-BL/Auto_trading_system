@@ -31,7 +31,7 @@ class OverviewWidget(QWidget): # 메인 프로세스
         self.diff.setText(f"{data['signed_change_rate']*100:.2f} %")
         self.volume.setText(str(data['acc_trade_volume_24h']))
         self.value.setText(f"{data['acc_trade_price_24h']/100000000:,.2f} 억원")
-        # self.strength.setText(str(data['strength']))
+        self.strength.setText(f"{data['acc_ask_volume']/data['acc_bid_volume']*100:.2f}")
         self.high.setText(str(data['high_price']))
         self.low.setText(str(data['low_price']))
         self.last.setText(str(data['prev_closing_price']))
