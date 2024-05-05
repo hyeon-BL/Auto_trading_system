@@ -17,6 +17,10 @@ class orderbookwidget(QWidget):
     def __init__(self):
         super().__init__()
         uic.loadUi('C:/Users/i4u11/Desktop/Work/Auto_trading_system/스레드/orderbook.ui', self)
+        
+        self.askani = []
+        self.bidani = []
+        
         self.worker = orderbookworker()
         self.worker.datarecieved.connect(self.update_orderbook) # worker로부터 데이터를 받으면 update_orderbook함수 실행
         self.worker.start() # orderbookworker의 run함수 실행
@@ -31,6 +35,10 @@ class orderbookwidget(QWidget):
             d = QProgressBar(self.asktable)
             d.setStyleSheet("QProgressBar::chunk {background-color: rgba(255,0,0,0.5);}")
             d.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
+            ani = QPropertyAnimation(d, b"value")
+            ani.setDuration(200)
+            ani.setStartValue(0)
+            self.askani.append(ani)
             self.asktable.setCellWidget(i, 2, d)
 
             d = QTableWidgetItem(str(""))
@@ -42,6 +50,10 @@ class orderbookwidget(QWidget):
             d = QProgressBar(self.bidtable)
             d.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
             d.setStyleSheet("QProgressBar::chunk {background-color: rgba(0,0,255,0.5);}")
+            ani = QPropertyAnimation(d, b"value")
+            ani.setDuration(200)
+            ani.setStartValue(0)
+            self.bidani.append(ani)
             self.bidtable.setCellWidget(i, 2, d)
 
     def update_orderbook(self, data):
@@ -68,7 +80,9 @@ class orderbookwidget(QWidget):
             d = self.asktable.cellWidget(9-i, 2)
             d.setRange(0, int(max_value))
             d.setFormat(f"{value:,.0f}")
-            d.setValue(int(value))
+            self.askani[9-i].setStartValue(d.value())
+            self.askani[9-i].setEndValue(int(value)) 
+            self.askani[9-i].start()
 
             value = item['bid_price'] * item['bid_size']
             d = self.bidtable.item(i, 0)
@@ -78,7 +92,9 @@ class orderbookwidget(QWidget):
             d = self.bidtable.cellWidget(i, 2)
             d.setRange(0, int(max_value))
             d.setFormat(f"{value:,.0f}")
-            d.setValue(int(value))
+            self.bidani[i].setStartValue(d.value())
+            self.bidani[i].setEndValue(int(value)) 
+            self.bidani[i].start()
 
 if __name__ == '__main__':
     app = QApplication([])
