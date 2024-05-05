@@ -28,9 +28,10 @@ class orderbookwidget(QWidget):
             d = QTableWidgetItem(str(""))
             d.setTextAlignment(Qt.AlignRight | Qt.AlignVCenter)
             self.asktable.setItem(i, 1, d)
-            d = QTableWidgetItem(str(""))
-            d.setTextAlignment(Qt.AlignRight | Qt.AlignVCenter)
-            self.asktable.setItem(i, 2, d)
+            d = QProgressBar(self.asktable)
+            d.setStyleSheet("QProgressBar::chunk {background-color: rgba(255,0,0,0.5);}")
+            d.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
+            self.asktable.setCellWidget(i, 2, d)
 
             d = QTableWidgetItem(str(""))
             d.setTextAlignment(Qt.AlignRight | Qt.AlignVCenter)
@@ -38,12 +39,24 @@ class orderbookwidget(QWidget):
             d = QTableWidgetItem(str(""))
             d.setTextAlignment(Qt.AlignRight | Qt.AlignVCenter)
             self.bidtable.setItem(i, 1, d)
-            d = QTableWidgetItem(str(""))
-            d.setTextAlignment(Qt.AlignRight | Qt.AlignVCenter)
-            self.bidtable.setItem(i, 2, d)
+            d = QProgressBar(self.bidtable)
+            d.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
+            d.setStyleSheet("QProgressBar::chunk {background-color: rgba(0,0,255,0.5);}")
+            self.bidtable.setCellWidget(i, 2, d)
 
     def update_orderbook(self, data):
         data = data['orderbook_units']
+
+        values = []
+        for item in data[:10]:
+            value = item['ask_price'] * item['ask_size']
+            values.append(value)
+            value = item['bid_price'] * item['bid_size']
+            values.append(value)
+
+        max_value = max(values)
+
+
         for item in data[:10]:
             i = data.index(item)
             value = item['ask_price'] * item['ask_size']
@@ -52,16 +65,20 @@ class orderbookwidget(QWidget):
             d.setText(str(item['ask_price'])) 
             d = self.asktable.item(9-i, 1)
             d.setText(str(item['ask_size']))
-            d = self.asktable.item(9-i, 2)
-            d.setText(str(value))
+            d = self.asktable.cellWidget(9-i, 2)
+            d.setRange(0, int(max_value))
+            d.setFormat(f"{value:,.0f}")
+            d.setValue(int(value))
 
             value = item['bid_price'] * item['bid_size']
             d = self.bidtable.item(i, 0)
             d.setText(str(item['bid_price']))
             d = self.bidtable.item(i, 1)
             d.setText(str(item['bid_size']))
-            d = self.bidtable.item(i, 2)
-            d.setText(str(value))
+            d = self.bidtable.cellWidget(i, 2)
+            d.setRange(0, int(max_value))
+            d.setFormat(f"{value:,.0f}")
+            d.setValue(int(value))
 
 if __name__ == '__main__':
     app = QApplication([])
