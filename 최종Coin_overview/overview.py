@@ -18,9 +18,9 @@ class Worker(QThread): # 서브 스레드
 
 
 class OverviewWidget(QWidget): # 메인 프로세스
-    def __init__(self):
-        super().__init__()
-        uic.loadUi("C:/Users/i4u11/Desktop/Work/Auto_trading_system/Coin_overview/overview.ui",self)
+    def __init__(self, parent=None): # 부모 위젯이 없을 경우 None
+        super().__init__(parent)
+        uic.loadUi("C:/Users/i4u11/Desktop/Work/Auto_trading_system/최종Coin_overview/overview.ui",self)
 
         self.worker = Worker() # 스레드 생성
         self.worker.received.connect(self.process_data) 
