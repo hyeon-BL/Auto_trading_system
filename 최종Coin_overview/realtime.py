@@ -10,9 +10,12 @@ class orderbookworker(QThread):
     def run(self): # thread 실행시 실행되는 함수
         self.alive = True
         while self.alive: # qthread는 무한루프를 돌면서 계속 실행
-            data = pyupbit.get_orderbook("KRW-BTC")
-            self.datarecieved.emit(data) # 데이터를 보내줌
-            time.sleep(0.2)
+            try:
+                data = pyupbit.get_orderbook("KRW-BTC")
+                self.datarecieved.emit(data) # 데이터를 보내줌
+                time.sleep(0.2)
+            except:
+                pass
 
     def end(self):
         self.alive = False

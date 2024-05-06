@@ -9,8 +9,11 @@ class Worker(QThread): # 서브 스레드
         wm = WebSocketManager("ticker", ["KRW-BTC"]) # 웹소켓 매니저 생성(새로운 프로세스 생성)
         self.alive = True
         while self.alive:
-            data = wm.get() # 큐를 통해 데이터를 받음
-            self.received.emit(data) # 데이터를 메인 프로세스로 보냄
+            try:
+                data = wm.get() # 큐를 통해 데이터를 받음
+                self.received.emit(data) # 데이터를 메인 프로세스로 보냄
+            except:
+                pass
         wm.terminate()
 
     def stop(self):
