@@ -8,14 +8,18 @@ class orderbookworker(QThread):
     datarecieved = pyqtSignal(dict) # pyqtSignal을 통해 데이터를 보내줄 수 있음
 
     def run(self): # thread 실행시 실행되는 함수
-        while True: # qthread는 무한루프를 돌면서 계속 실행
+        self.alive = True
+        while self.alive: # qthread는 무한루프를 돌면서 계속 실행
             data = pyupbit.get_orderbook("KRW-BTC")
             self.datarecieved.emit(data) # 데이터를 보내줌
             time.sleep(0.2)
 
+    def end(self):
+        self.alive = False
+
 class orderbookwidget(QWidget):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, parent=None):
+        super().__init__(parent)
         uic.loadUi('C:/Users/i4u11/Desktop/Work/Auto_trading_system/스레드/orderbook.ui', self)
         
         self.askani = []
@@ -95,6 +99,10 @@ class orderbookwidget(QWidget):
             self.bidani[i].setStartValue(d.value())
             self.bidani[i].setEndValue(int(value)) 
             self.bidani[i].start()
+
+    def closeEvent(self, event):
+        self.worker.end()
+
 
 if __name__ == '__main__':
     app = QApplication([])
